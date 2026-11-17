@@ -18,7 +18,7 @@ Abra <http://127.0.0.1:5500>. O OCR rápido (PP-OCRv6) é opcional: sem o Paddle
 ## Deixar online pelo seu PC (Cloudflare Tunnel)
 
 1. Instale o túnel uma vez: `winget install --id Cloudflare.cloudflared`
-2. Rode `iniciar_online.bat` (na raiz do projeto). Ele sobe o servidor, que serve a tela e a IA juntas na porta 8000, e abre o túnel.
+2. Rode `iniciar_online.bat` (na raiz do projeto). Ele sobe o servidor, que serve a tela e a IA juntas na porta 8765, e abre o túnel.
 3. Copie o link `https://….trycloudflare.com` que aparece na janela e compartilhe.
 
 O sistema fica no ar enquanto o PC e a janela estiverem abertos, usando a placa de vídeo do PC. O link muda a cada vez que o túnel é aberto.
