@@ -1,14 +1,2 @@
-# ============================================================
-# Agepa — Extração de Topologias de Plantas Baixas
-# Dependências do Projeto (TCC)
-# ============================================================
-# Instalar via:
-#   pip install -r requirements.txt
-# ============================================================
-
-torch>=2.1.0
-transformers>=4.36.0
-Pillow>=10.0.0
-opencv-python>=4.8.0
-einops>=0.7.0
-timm>=0.9.0
+# Dependências do AGEPA (backend). Para rodar: pip install -r backend/requirements.txt
+-r backend/requirements.txt

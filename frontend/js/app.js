@@ -16,7 +16,24 @@
 // ── Configuração ────────────────────────────────────────────
 // Mesmo endereço em que a página foi aberta (127.0.0.1 ou localhost): "localhost"
 // pode cair no IPv6 (::1), onde o servidor (127.0.0.1) não escuta.
-const API_BASE = `http://${["localhost", "127.0.0.1"].includes(location.hostname) ? location.hostname : "127.0.0.1"}:8000`;
+// Local (servidor estático na 5500 ou arquivo aberto): API na porta 8000.
+// Pelo túnel (link trycloudflare.com): a tela vem do próprio backend, mesma origem.
+/** Link do túnel para a tela do GitHub Pages: "?api=https://xxx.trycloudflare.com" fica guardado. */
+function tunnelApi() {
+    const given = new URLSearchParams(location.search).get("api");
+    try {
+        if (given) localStorage.setItem("agepa_api", given.replace(/\/+$/, ""));
+        return localStorage.getItem("agepa_api") || "";
+    } catch {
+        return given ? given.replace(/\/+$/, "") : "";
+    }
+}
+
+const API_BASE = (location.protocol === "file:" || location.port === "5500")
+    ? `http://${["localhost", "127.0.0.1"].includes(location.hostname) ? location.hostname : "127.0.0.1"}:8000`
+    // GitHub Pages: só a tela está lá; a IA roda no PC, pelo túnel da Cloudflare.
+    : location.hostname.endsWith("github.io") ? tunnelApi()
+    : location.origin;
 const API = {
     health:     `${API_BASE}/`,
     analyze:    `${API_BASE}/api/analisar`,

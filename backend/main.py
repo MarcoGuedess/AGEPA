@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 import time
 from contextlib import asynccontextmanager
@@ -28,7 +29,9 @@ from typing import Any, AsyncGenerator, Dict, Optional
 from fastapi import FastAPI, File, Form, HTTPException, Query, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi import Request
+from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 from services.ai_service import AnalysisCancelled, FloorPlanAnalyzer, ProgressTracker
 from services.cost_service import CostEstimator, CostInputError
@@ -132,8 +135,22 @@ app.add_middleware(
 # Rotas
 # ══════════════════════════════════════════════════════════════
 
+# ── Tela (frontend) servida pelo próprio backend — acesso pelo túnel da Cloudflare ──
+# AGEPA_FRONTEND_DIR=/caminho/frontend: a tela fica em /ui/ e quem abre "/" no
+# navegador é levado até ela; o "/" continua respondendo JSON para a própria tela.
+FRONTEND_DIR = os.environ.get("AGEPA_FRONTEND_DIR")
+if FRONTEND_DIR:
+    app.mount("/ui", StaticFiles(directory=FRONTEND_DIR, html=True), name="ui")
+
+
 @app.get("/", tags=["Health"])
-async def root() -> Dict[str, Any]:
+async def root(request: Request) -> Any:
+    if FRONTEND_DIR and "text/html" in request.headers.get("accept", ""):
+        return RedirectResponse("/ui/")
+    return await _health()
+
+
+async def _health() -> Dict[str, Any]:
     """Health check — verifica se o servidor está ativo.
 
     Também informa o tempo típico de uma análise (folha A a 2000 px)
