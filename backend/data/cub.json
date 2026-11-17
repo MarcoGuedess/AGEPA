@@ -1,0 +1,38 @@
+{
+    "_comentario": "Tabelas do CUB/m² (NBR 12.721). Para atualizar: troque 'referencia' e os valores pela tabela mais recente do Sinduscon. Para outro estado: acrescente uma entrada em 'estados' com a mesma estrutura.",
+    "norma": "ABNT NBR 12.721:2006",
+    "nao_inclui": [
+        "Fundações especiais (estacas, tubulões)",
+        "Elevadores e equipamentos",
+        "Obras complementares (muros, paisagismo, piscina, urbanização)",
+        "Projetos, licenças e taxas",
+        "Impostos e BDI (lucro e despesas indiretas da construtora)",
+        "Terreno"
+    ],
+    "padroes": {
+        "B": "Baixo",
+        "N": "Normal",
+        "A": "Alto"
+    },
+    "estados": {
+        "SP": {
+            "nome": "São Paulo",
+            "fonte": "SindusCon-SP / FGV",
+            "fonte_url": "https://sindusconsp.com.br/servicos/cub/",
+            "referencia": "2026-10",
+            "regime": "Sem desoneração",
+            "tipologias": {
+                "R1":    { "nome": "Residência unifamiliar (casa)",           "valores": { "B": 2199.84, "N": 2697.79, "A": 3265.97 } },
+                "PP4":   { "nome": "Prédio popular (térreo + 3 pavimentos)",  "valores": { "B": 2056.26, "N": 2562.21 } },
+                "R8":    { "nome": "Residencial multifamiliar (8 pavimentos)", "valores": { "B": 1957.98, "N": 2245.68, "A": 2635.67 } },
+                "R16":   { "nome": "Residencial multifamiliar (16 pavimentos)", "valores": { "N": 2183.36, "A": 2854.95 } },
+                "PIS":   { "nome": "Projeto de interesse social",             "valores": { "B": 1528.83 } },
+                "RP1Q":  { "nome": "Residência popular (1 quarto)",           "valores": { "B": 2397.88 } },
+                "CAL8":  { "nome": "Comercial, andares livres (8 pavimentos)", "valores": { "N": 2605.49, "A": 2757.50 } },
+                "CSL8":  { "nome": "Comercial, salas e lojas (8 pavimentos)",  "valores": { "N": 2244.59, "A": 2416.86 } },
+                "CSL16": { "nome": "Comercial, salas e lojas (16 pavimentos)", "valores": { "N": 2994.92, "A": 3220.56 } },
+                "GI":    { "nome": "Galpão industrial",                        "valores": { "B": 1270.31 } }
+            }
+        }
+    }
+}

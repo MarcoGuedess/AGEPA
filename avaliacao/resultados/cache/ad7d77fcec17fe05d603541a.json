@@ -1,0 +1,24 @@
+{
+ "area_m2": 402.43,
+ "area_kind": "construida",
+ "area_method": "carimbo",
+ "confidence": "alta",
+ "qtd_comodos": 9,
+ "text_source": "ocr",
+ "rooms_with_area": 4,
+ "rooms_sum_m2": 330.23,
+ "declared_area": {
+  "valor_m2": 402.43,
+  "rotulo": "ÁREA A CONSTRUIR",
+  "exato": false,
+  "conferido": true
+ },
+ "checks": [
+  "Soma dos 4 ambientes com área: 330,23 m² (82% da área do carimbo; o restante são paredes e ambientes sem área anotada)."
+ ],
+ "warnings": [],
+ "page": null,
+ "processing_time_s": 321.98,
+ "segundos_total": 322.1,
+ "modo": "original"
+}

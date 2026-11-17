@@ -1,0 +1,27 @@
+{
+ "area_m2": 372.75,
+ "area_kind": "util",
+ "area_method": "areas_declaradas",
+ "confidence": "media",
+ "qtd_comodos": 59,
+ "text_source": "ocr",
+ "rooms_with_area": 56,
+ "rooms_sum_m2": 372.75,
+ "declared_area": null,
+ "checks": [
+  "Áreas de unidade/bloco impressas na planta (não somadas aos ambientes): Unidade: 65,16 m²."
+ ],
+ "warnings": [
+  "Ambientes sem área legível (não somados): Circulacão/hall, Hall, Hall",
+  "Esta é a área útil (soma dos ambientes). A área construída é maior, pois inclui as paredes; se o carimbo da prancha tiver a área total, use-a.",
+  "O PDF tem 10 páginas; foi lida a página 4 (escolhida).",
+  "PDF sem texto (escaneado ou com as letras em traços): a leitura foi feita por OCR."
+ ],
+ "page": {
+  "numero": 4,
+  "total": 10
+ },
+ "processing_time_s": 281.72,
+ "segundos_total": 281.8,
+ "modo": "original_p4"
+}

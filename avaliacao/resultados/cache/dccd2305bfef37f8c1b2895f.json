@@ -1,0 +1,20 @@
+{
+ "area_m2": 954.68,
+ "area_kind": "util",
+ "area_method": "areas_declaradas",
+ "confidence": "media",
+ "qtd_comodos": 51,
+ "text_source": "ocr",
+ "rooms_with_area": 51,
+ "rooms_sum_m2": 954.68,
+ "declared_area": null,
+ "checks": [],
+ "warnings": [
+  "Quadro de áreas (51 ambientes, 954,68 m²) × rótulos na planta (1.013,92 m²): diferença de 6.2%.",
+  "Esta é a área útil (soma dos ambientes). A área construída é maior, pois inclui as paredes; se o carimbo da prancha tiver a área total, use-a."
+ ],
+ "page": null,
+ "processing_time_s": 742.54,
+ "segundos_total": 742.7,
+ "modo": "original"
+}

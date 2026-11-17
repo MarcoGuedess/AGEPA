@@ -1,0 +1,24 @@
+{
+ "area_m2": null,
+ "area_kind": null,
+ "area_method": "indisponivel",
+ "confidence": "baixa",
+ "qtd_comodos": 0,
+ "text_source": "ocr",
+ "rooms_with_area": 0,
+ "rooms_sum_m2": null,
+ "declared_area": null,
+ "checks": [],
+ "warnings": [
+  "Não encontramos área no carimbo, rótulos de área nos ambientes nem cotas coerentes. Informe a área manualmente para calcular prazo e custo.",
+  "O PDF tem 10 páginas; foi lida a página 5 (escolhida).",
+  "PDF sem texto (escaneado ou com as letras em traços): a leitura foi feita por OCR."
+ ],
+ "page": {
+  "numero": 5,
+  "total": 10
+ },
+ "processing_time_s": 287.61,
+ "segundos_total": 287.7,
+ "modo": "original_p5"
+}

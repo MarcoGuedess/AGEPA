@@ -1,0 +1,50 @@
+{
+ "versao": 1,
+ "fonte": "SIMEC — transparência de obras (FNDE), planilha nacional",
+ "planilha": "C:\\Users\\Admin\\Desktop\\Programação\\Faculdade\\TCC\\Agepa\\dados\\obras_simec_fnde.csv",
+ "sha256_planilha": "6245f44e09097f9b75a0f2db27772116e099ab69dfefa62eba75342126e998bd",
+ "gerado_em": "2026-11-15T21:19:07",
+ "excluidas_coluna_usar": 16,
+ "aviso": "Datas de CONTRATO do SIMEC: início = assinatura do contrato; fim = término do contrato (vigência com aditivos). O SIMEC não publica a data real de conclusão.",
+ "tipologias": {
+  "creche_tipo1": {
+   "tipologia": "Creche Pré-Escola - Tipo 1",
+   "area_m2": 1324.27,
+   "n_obras": 487,
+   "mediana_meses": 30.0,
+   "intervalo_80_meses": [
+    12.7,
+    66.0
+   ],
+   "media_meses": 35.6,
+   "mediana_ate_ultima_vistoria_meses": 34.9,
+   "ufs": 26
+  },
+  "creche_tipo2": {
+   "tipologia": "Creche Pré-Escola - Tipo 2",
+   "area_m2": 786.07,
+   "n_obras": 363,
+   "mediana_meses": 30.0,
+   "intervalo_80_meses": [
+    12.0,
+    63.4
+   ],
+   "media_meses": 34.4,
+   "mediana_ate_ultima_vistoria_meses": 33.7,
+   "ufs": 24
+  },
+  "quadra_vestiario": {
+   "tipologia": "Quadra Escolar Coberta com Vestiário",
+   "area_m2": 785.0,
+   "n_obras": 2909,
+   "mediana_meses": 24.0,
+   "intervalo_80_meses": [
+    8.9,
+    54.9
+   ],
+   "media_meses": 28.5,
+   "mediana_ate_ultima_vistoria_meses": 27.1,
+   "ufs": 26
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "area_m2": 786.07,
+ "area_kind": "construida",
+ "area_method": "carimbo",
+ "confidence": "media",
+ "qtd_comodos": 14,
+ "text_source": "pdf",
+ "rooms_with_area": 10,
+ "rooms_sum_m2": 1013.59,
+ "declared_area": {
+  "valor_m2": 786.07,
+  "rotulo": "ÁREA CONSTRUÍDA",
+  "exato": true,
+  "conferido": true
+ },
+ "checks": [],
+ "warnings": [
+  "A soma dos ambientes (1.013,59 m²) passa da área do carimbo (786,07 m²): o carimbo pode se referir a só uma parte da obra."
+ ],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 1.81,
+ "segundos_total": 2.0,
+ "modo": "original"
+}

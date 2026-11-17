@@ -1,0 +1,29 @@
+{
+ "area_m2": 1324.27,
+ "area_kind": "construida",
+ "area_method": "carimbo",
+ "confidence": "alta",
+ "qtd_comodos": 5,
+ "text_source": "pdf",
+ "rooms_with_area": 5,
+ "rooms_sum_m2": 1324.27,
+ "declared_area": {
+  "valor_m2": 1324.27,
+  "rotulo": "ÁREA CONSTRUÍDA",
+  "exato": true,
+  "conferido": true
+ },
+ "checks": [
+  "Soma dos 5 ambientes com área: 1.324,27 m² (100% da área do carimbo; o restante são paredes)."
+ ],
+ "warnings": [
+  "Quadro de áreas (5 ambientes, 1.324,27 m²) × rótulos na planta (1.622,59 m²): diferença de 22.5%."
+ ],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 2.31,
+ "segundos_total": 2.6,
+ "modo": "original"
+}

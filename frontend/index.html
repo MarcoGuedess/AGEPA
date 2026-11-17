@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AGEPA — Sistema inteligente para análise de plantas baixas arquitetônicas e estimativa de prazos de obras utilizando IA." />
+    <meta name="author" content="AGEPA TCC" />
+    <title>AGEPA — Análise Inteligente de Plantas Baixas</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Lucide Icons (versão fixa: "latest" pode mudar e quebrar ícones) -->
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Header                                                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <header class="header">
+        <div class="header__brand">
+            <div class="header__logo" aria-hidden="true">
+                <i data-lucide="scan-line"></i>
+            </div>
+            <div>
+                <h1 class="header__title">AGEPA</h1>
+                <p class="header__subtitle">Análise Inteligente de Plantas Baixas</p>
+            </div>
+        </div>
+        <div class="header__status">
+            <span class="status-pill status-pill--checking" id="server-status" role="status" aria-live="polite">
+                <span class="status-pill__dot" aria-hidden="true"></span>
+                <span id="server-status-text">Conectando ao servidor…</span>
+            </span>
+            <span class="badge badge--model" title="Modelo de visão computacional usado na leitura da planta">
+                <i data-lucide="cpu"></i>
+                Florence-2
+            </span>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Main Content                                            -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <main class="main" id="main-content" tabindex="-1">
+
+        <!-- Aviso: servidor offline -->
+        <div class="banner banner--error" id="offline-banner" role="alert" hidden>
+            <i data-lucide="server-off"></i>
+            <div class="banner__body">
+                <strong>Não foi possível conectar ao servidor de IA.</strong>
+                <span>
+                    Inicie o backend em <code>Agepa/backend</code> com
+                    <code>uvicorn main:app --port 8000</code>. Tentaremos novamente automaticamente.
+                </span>
+            </div>
+            <button class="btn btn--ghost btn--sm" id="btn-reconnect">
+                <i data-lucide="refresh-cw"></i>
+                Tentar agora
+            </button>
+        </div>
+
+        <!-- ═════════════════════════════════════════════════ -->
+        <!-- Tela 1 — Envio                                     -->
+        <!-- ═════════════════════════════════════════════════ -->
+        <section class="view view--upload" id="view-upload" aria-labelledby="upload-heading">
+            <div class="hero">
+                <h2 class="hero__title" id="upload-heading">
+                    Descubra a área e o prazo da obra a partir da planta baixa
+                </h2>
+                <p class="hero__text">
+                    Envie a planta em PDF ou imagem. Lemos o carimbo, as áreas dos ambientes e as
+                    cotas, conferimos uma fonte com a outra e estimamos o prazo e o custo da obra.
+                </p>
+            </div>
+
+            <div class="upload-layout">
+                <!-- Coluna principal: escolha do arquivo -->
+                <div class="upload-main">
+                    <div
+                        class="dropzone"
+                        id="dropzone"
+                        role="button"
+                        tabindex="0"
+                        aria-describedby="dropzone-formats"
+                    >
+                        <div class="dropzone__icon" aria-hidden="true">
+                            <i data-lucide="cloud-upload"></i>
+                        </div>
+                        <p class="dropzone__title">
+                            Arraste a planta aqui ou <span class="link-like">escolha um arquivo</span>
+                        </p>
+                        <p class="dropzone__hint">Você também pode colar uma imagem com Ctrl + V</p>
+                        <p class="dropzone__formats" id="dropzone-formats">
+                            PDF, PNG, JPG, BMP ou TIFF · até 50 MB
+                        </p>
+                        <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.bmp,.tif,.tiff,application/pdf" hidden />
+                    </div>
+
+                    <!-- Erro de validação (sem sair da tela) -->
+                    <p class="field-error" id="file-error" role="alert" hidden></p>
+
+                    <!-- Arquivo selecionado -->
+                    <div class="file-card" id="file-card" hidden>
+                        <img class="file-card__thumb" id="file-thumb" alt="Miniatura da planta selecionada" />
+                        <div class="file-card__info">
+                            <p class="file-card__name" id="file-name">—</p>
+                            <p class="file-card__meta" id="file-meta">—</p>
+                            <p class="file-card__estimate" id="file-estimate">
+                                <i data-lucide="timer"></i>
+                                <span id="file-estimate-text">Calculando tempo estimado…</span>
+                            </p>
+                            <p class="file-card__warning" id="file-warning" hidden>
+                                <i data-lucide="triangle-alert"></i>
+                                <span id="file-warning-text"></span>
+                            </p>
+                        </div>
+                        <button class="btn btn--ghost btn--sm file-card__change" id="btn-change-file">
+                            <i data-lucide="replace"></i>
+                            Trocar imagem
+                        </button>
+                    </div>
+
+                    <button class="btn btn--primary btn--lg btn--block" id="btn-analyze" disabled>
+                        <i data-lucide="scan-search"></i>
+                        Analisar planta baixa
+                    </button>
+                    <p class="action-hint" id="analyze-hint">Escolha uma imagem para começar.</p>
+                </div>
+
+                <!-- Coluna lateral: como funciona + dicas -->
+                <aside class="upload-aside" aria-label="Como funciona e dicas">
+                    <div class="info-card">
+                        <h3 class="info-card__title">Como funciona</h3>
+                        <ol class="how-steps">
+                            <li>
+                                <span class="how-steps__num">1</span>
+                                <div>
+                                    <strong>Leitura da planta</strong>
+                                    <p>PDF do CAD: o texto é lido exatamente como está no arquivo, em segundos. Imagem: a IA lê textos, áreas e cotas em pequenos blocos.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="how-steps__num">2</span>
+                                <div>
+                                    <strong>Conferência da área</strong>
+                                    <p>A área vem do carimbo, dos ambientes ou das cotas, e uma fonte confere a outra. Números lidos por IA são relidos ampliados.</p>
+                                </div>
+                            </li>
+                            <li>
+                                <span class="how-steps__num">3</span>
+                                <div>
+                                    <strong>Prazo e custo</strong>
+                                    <p>Área e cômodos alimentam o modelo de prazo; o custo usa o CUB/m². Se a área estiver errada, você corrige e tudo é recalculado.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="info-card">
+                        <h3 class="info-card__title">Para um resultado mais preciso</h3>
+                        <ul class="tips">
+                            <li><i data-lucide="check"></i>Prefira o PDF exportado do CAD: leitura exata e em segundos</li>
+                            <li><i data-lucide="check"></i>Prancha com carimbo ("ÁREA A CONSTRUIR") ou com a área de cada ambiente</li>
+                            <li><i data-lucide="check"></i>Imagens: pelo menos 1500 px no lado maior</li>
+                            <li><i data-lucide="check"></i>Prancha inteira, sem cortes nas bordas</li>
+                            <li><i data-lucide="check"></i>Qualquer orientação: a imagem é girada automaticamente</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <!-- ═════════════════════════════════════════════════ -->
+        <!-- Tela 2 — Análise (progresso → resultados)          -->
+        <!-- ═════════════════════════════════════════════════ -->
+        <section class="view view--analysis" id="view-analysis" aria-labelledby="analysis-heading" hidden>
+
+            <div class="analysis-header">
+                <div>
+                    <h2 class="analysis-header__title" id="analysis-heading" tabindex="-1">Analisando sua planta</h2>
+                    <p class="analysis-header__file" id="analysis-file">—</p>
+                    <div class="page-pick" id="page-pick" hidden>
+                        <label for="page-select">Página lida</label>
+                        <select id="page-select"></select>
+                        <span id="page-total"></span>
+                        <button type="button" class="link-btn" id="btn-read-page">
+                            <i data-lucide="file-search"></i>Ler esta página
+                        </button>
+                        <span class="page-pick__sep" aria-hidden="true">·</span>
+                        <label for="pages-input">Prédio, páginas</label>
+                        <input id="pages-input" type="text" inputmode="text" autocomplete="off"
+                               placeholder="ex.: 1-6" aria-describedby="pages-hint" />
+                        <button type="button" class="link-btn" id="btn-read-all">
+                            <i data-lucide="layers"></i>Ler como um prédio
+                        </button>
+                        <span class="page-pick__hint" id="pages-hint">soma os pavimentos (“todas” ou 1-6, 2,4)</span>
+                    </div>
+                </div>
+                <div class="analysis-header__actions" id="result-actions" hidden>
+                    <button class="btn btn--outline" id="btn-download">
+                        <i data-lucide="download"></i>
+                        Baixar imagem anotada
+                    </button>
+                    <button class="btn btn--primary" id="btn-new-analysis">
+                        <i data-lucide="plus"></i>
+                        Nova análise
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progresso -->
+            <div class="progress-card" id="progress-card">
+                <div class="progress-card__head">
+                    <div class="progress-card__stage">
+                        <span class="progress-card__spinner" aria-hidden="true"></span>
+                        <div>
+                            <p class="progress-card__title" id="progress-title">Enviando imagem…</p>
+                            <p class="progress-card__detail" id="progress-detail">Preparando a análise</p>
+                        </div>
+                    </div>
+                    <span class="progress-card__percent" id="progress-percent" aria-hidden="true">0%</span>
+                </div>
+
+                <div
+                    class="progress-bar"
+                    id="progress-bar"
+                    role="progressbar"
+                    aria-label="Progresso da análise"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                >
+                    <div class="progress-bar__fill" id="progress-fill"></div>
+                </div>
+
+                <dl class="progress-times">
+                    <div>
+                        <dt>Decorrido</dt>
+                        <dd id="time-elapsed">0:00</dd>
+                    </div>
+                    <div>
+                        <dt>Restante</dt>
+                        <dd id="time-remaining">calculando…</dd>
+                    </div>
+                    <div>
+                        <dt>Término previsto</dt>
+                        <dd id="time-finish">—</dd>
+                    </div>
+                </dl>
+
+                <ol class="stepper" id="stepper" aria-label="Etapas da análise">
+                    <li class="stepper__item" data-step="0"><span class="stepper__dot"></span>Preparação</li>
+                    <li class="stepper__item" data-step="1"><span class="stepper__dot"></span>Leitura dos textos</li>
+                    <li class="stepper__item" data-step="2"><span class="stepper__dot"></span>Textos verticais</li>
+                    <li class="stepper__item" data-step="3"><span class="stepper__dot"></span>Conferência</li>
+                    <li class="stepper__item" data-step="4"><span class="stepper__dot"></span>Cálculo</li>
+                </ol>
+
+                <div class="progress-card__foot">
+                    <p class="progress-card__note">
+                        <i data-lucide="info"></i>
+                        Pode trocar de aba: o título da página mostra o andamento.
+                    </p>
+                    <button class="btn btn--ghost btn--sm" id="btn-cancel">
+                        <i data-lucide="x"></i>
+                        Cancelar análise
+                    </button>
+                </div>
+                <p class="sr-only" id="progress-live" aria-live="polite"></p>
+            </div>
+
+            <!-- Resumo: métricas (esqueleto enquanto carrega) -->
+            <div class="metrics-grid" id="metrics" aria-busy="true">
+                <article class="metric-card metric-card--area">
+                    <div class="metric-card__icon" aria-hidden="true"><i data-lucide="ruler"></i></div>
+                    <div class="metric-card__data">
+                        <p class="metric-card__label" id="metric-area-label">Área construída</p>
+                        <p class="metric-card__value" id="metric-area"><span class="skeleton skeleton--value"></span></p>
+                        <p class="metric-card__help" id="metric-area-help">Lendo a planta…</p>
+                        <button type="button" class="link-btn" id="btn-edit-area" hidden>
+                            <i data-lucide="pencil"></i>Corrigir área
+                        </button>
+                    </div>
+                </article>
+                <article class="metric-card metric-card--prazo">
+                    <div class="metric-card__icon" aria-hidden="true"><i data-lucide="calendar-clock"></i></div>
+                    <div class="metric-card__data">
+                        <p class="metric-card__label">Prazo estimado</p>
+                        <p class="metric-card__value" id="metric-prazo"><span class="skeleton skeleton--value"></span></p>
+                        <p class="metric-card__help" id="metric-prazo-help">Previsto pelo modelo de prazo</p>
+                        <div class="metric-card__alt" id="metric-prazo-alt" hidden></div>
+                    </div>
+                </article>
+                <article class="metric-card metric-card--rooms">
+                    <div class="metric-card__icon" aria-hidden="true"><i data-lucide="layout-grid"></i></div>
+                    <div class="metric-card__data">
+                        <p class="metric-card__label">Cômodos</p>
+                        <p class="metric-card__value" id="metric-rooms"><span class="skeleton skeleton--value"></span></p>
+                        <p class="metric-card__help">Ambientes internos identificados</p>
+                    </div>
+                </article>
+                <article class="metric-card metric-card--confidence">
+                    <div class="metric-card__icon" aria-hidden="true"><i data-lucide="shield-check"></i></div>
+                    <div class="metric-card__data">
+                        <p class="metric-card__label">Confiança</p>
+                        <p class="metric-card__value" id="metric-confidence"><span class="skeleton skeleton--value"></span></p>
+                        <p class="metric-card__help" id="metric-confidence-help">Quão confiável é a área</p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Correção manual da área (recalcula prazo e custo) -->
+            <form class="card area-edit" id="area-edit" hidden novalidate>
+                <div class="area-edit__text">
+                    <p class="area-edit__title" id="area-edit-title">Informe a área correta</p>
+                    <p class="area-edit__help">Use a área construída do projeto (carimbo, memorial ou quadro de áreas). Prazo e custo são recalculados.</p>
+                </div>
+                <div class="area-edit__controls">
+                    <label class="sr-only" for="area-input">Área construída em metros quadrados</label>
+                    <div class="area-edit__field">
+                        <input id="area-input" type="text" inputmode="decimal" autocomplete="off" placeholder="ex.: 402,43" aria-describedby="area-edit-error" />
+                        <span aria-hidden="true">m²</span>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--sm">
+                        <i data-lucide="refresh-cw"></i>Recalcular
+                    </button>
+                    <button type="button" class="btn btn--ghost btn--sm" id="btn-area-cancel">Cancelar</button>
+                </div>
+                <p class="field-error area-edit__error" id="area-edit-error" role="alert" hidden></p>
+            </form>
+
+            <!-- Como a área foi obtida -->
+            <div class="notice" id="basis" hidden>
+                <i data-lucide="lightbulb" class="notice__icon"></i>
+                <div class="notice__body">
+                    <p class="notice__title" id="basis-title">—</p>
+                    <p class="notice__text" id="basis-text">—</p>
+                    <ul class="notice__list" id="basis-warnings"></ul>
+                </div>
+            </div>
+
+            <!-- Prédio lido em várias páginas: área por pavimento -->
+            <section class="card building-card" id="building-card" aria-labelledby="building-heading" hidden>
+                <div class="card__header">
+                    <h3 class="card__title" id="building-heading"><i data-lucide="building-2"></i>Prédio por pavimento</h3>
+                    <span class="building-card__status" id="building-status">—</span>
+                </div>
+                <div class="building-card__body">
+                    <table class="building-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Página</th>
+                                <th scope="col">Como foi lida</th>
+                                <th scope="col" class="num">Área</th>
+                                <th scope="col" class="num">Repetição</th>
+                                <th scope="col" class="num">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="building-rows"></tbody>
+                        <tfoot>
+                            <tr>
+                                <th scope="row" colspan="4">Soma do que foi lido</th>
+                                <td class="num" id="building-sum">—</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <p class="building-card__note" id="building-note"></p>
+                </div>
+            </section>
+
+            <!-- Custo estimado (CUB) — recalcula ao trocar tipologia/padrão -->
+            <section class="card cost-card" id="cost-card" aria-labelledby="cost-heading" hidden>
+                <div class="card__header">
+                    <h3 class="card__title" id="cost-heading"><i data-lucide="banknote"></i>Custo estimado da obra</h3>
+                    <span class="cost-card__ref" id="cost-ref">—</span>
+                </div>
+                <div class="cost-card__body">
+                    <div class="cost-card__controls">
+                        <label class="cost-field">
+                            <span class="cost-field__label">Tipo de edificação</span>
+                            <select class="cost-field__select" id="cost-tipologia"></select>
+                        </label>
+                        <div class="cost-field">
+                            <span class="cost-field__label" id="cost-padrao-label">Padrão de acabamento</span>
+                            <div class="segmented" id="cost-padrao" role="group" aria-labelledby="cost-padrao-label"></div>
+                        </div>
+                    </div>
+
+                    <div class="cost-card__result" aria-live="polite">
+                        <p class="cost-card__total" id="cost-total">—</p>
+                        <p class="cost-card__formula" id="cost-formula">—</p>
+                    </div>
+
+                    <dl class="cost-card__range" id="cost-range"></dl>
+                </div>
+                <details class="cost-card__excluded">
+                    <summary>O que não está incluído no valor</summary>
+                    <ul id="cost-excluded"></ul>
+                    <p class="cost-card__source" id="cost-source"></p>
+                </details>
+            </section>
+
+            <!-- Imagem + ambientes -->
+            <div class="results-layout">
+                <div class="card image-card">
+                    <div class="card__header">
+                        <h3 class="card__title"><i data-lucide="image"></i>Planta</h3>
+                        <div class="segmented" id="image-toggle" role="group" aria-label="Versão da imagem" hidden>
+                            <button class="segmented__btn is-active" data-version="annotated" aria-pressed="true">Anotada</button>
+                            <button class="segmented__btn" data-version="original" aria-pressed="false">Original</button>
+                        </div>
+                    </div>
+                    <div class="image-card__body">
+                        <div class="image-frame" id="image-frame">
+                            <img id="result-image" alt="Planta baixa enviada" />
+                            <div class="image-frame__scan" aria-hidden="true"></div>
+                        </div>
+                        <a class="image-card__open" id="image-open" target="_blank" rel="noopener" hidden>
+                            <i data-lucide="maximize-2"></i>
+                            Abrir em tamanho real
+                        </a>
+                    </div>
+                    <p class="image-card__legend" id="image-legend" hidden>
+                        <span class="legend-swatch legend-swatch--room"></span>Ambientes
+                        <span class="legend-swatch legend-swatch--declared"></span>Área do carimbo
+                        <span class="legend-swatch legend-swatch--cota"></span>Cotas usadas
+                        <span class="legend-swatch legend-swatch--text"></span>Textos lidos
+                        <span id="legend-contorno" hidden><span class="legend-swatch legend-swatch--contorno"></span>Contorno medido</span>
+                    </p>
+                </div>
+
+                <div class="card rooms-card">
+                    <div class="card__header">
+                        <h3 class="card__title"><i data-lucide="layout-grid"></i>Ambientes identificados</h3>
+                    </div>
+                    <div class="rooms-card__body" id="room-list">
+                        <div class="skeleton-row"><span class="skeleton"></span><span class="skeleton skeleton--short"></span></div>
+                        <div class="skeleton-row"><span class="skeleton"></span><span class="skeleton skeleton--short"></span></div>
+                        <div class="skeleton-row"><span class="skeleton"></span><span class="skeleton skeleton--short"></span></div>
+                        <div class="skeleton-row"><span class="skeleton"></span><span class="skeleton skeleton--short"></span></div>
+                    </div>
+                    <dl class="rooms-card__totals" id="room-totals" hidden>
+                        <div>
+                            <dt>Soma dos ambientes</dt>
+                            <dd id="total-built">—</dd>
+                        </div>
+                        <div>
+                            <dt>Áreas externas</dt>
+                            <dd id="total-external">—</dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Detalhes técnicos (revelação progressiva) -->
+            <details class="card tech-details" id="tech-details" hidden>
+                <summary class="tech-details__summary">
+                    <i data-lucide="settings-2"></i>
+                    Detalhes técnicos da análise
+                    <i data-lucide="chevron-down" class="tech-details__chevron"></i>
+                </summary>
+                <div class="tech-details__body">
+                    <dl class="tech-facts" id="tech-facts"></dl>
+                    <div class="tech-lists">
+                        <div>
+                            <h4 class="tech-lists__title">Textos lidos pelo OCR <span class="count" id="ocr-count">0</span></h4>
+                            <ul class="chip-list" id="ocr-list"></ul>
+                        </div>
+                        <div>
+                            <h4 class="tech-lists__title">Objetos detectados <span class="count" id="od-count">0</span></h4>
+                            <ul class="chip-list" id="od-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <!-- ═════════════════════════════════════════════════ -->
+        <!-- Tela 3 — Erro                                      -->
+        <!-- ═════════════════════════════════════════════════ -->
+        <section class="view view--error" id="view-error" hidden>
+            <div class="error-card" role="alert">
+                <div class="error-card__icon" aria-hidden="true">
+                    <i data-lucide="triangle-alert"></i>
+                </div>
+                <h2 class="error-card__title" id="error-title">Não foi possível analisar a planta</h2>
+                <p class="error-card__text" id="error-text">Ocorreu um erro inesperado.</p>
+                <ul class="error-card__tips" id="error-tips"></ul>
+                <div class="error-card__actions">
+                    <button class="btn btn--primary" id="btn-retry">
+                        <i data-lucide="rotate-ccw"></i>
+                        Tentar novamente
+                    </button>
+                    <button class="btn btn--outline" id="btn-other-file">
+                        <i data-lucide="image-plus"></i>
+                        Escolher outra imagem
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Avisos rápidos -->
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Footer                                                  -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <footer class="footer">
+        <p>
+            AGEPA © 2026 — Trabalho de Conclusão de Curso
+            <span class="footer__sep" aria-hidden="true">·</span>
+            Powered by <strong>Microsoft Florence-2</strong>
+        </p>
+        <p class="footer__note">
+            Os valores são estimativas automáticas e não substituem o levantamento de um profissional habilitado.
+        </p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

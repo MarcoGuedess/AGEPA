@@ -1,0 +1,102 @@
+{
+  "versao": 1,
+  "base": null,
+  "aviso": null,
+  "tipo": "potencia",
+  "nome": "Potência (log-linear)",
+  "formula": "prazo = 1.6743 · área^0.307",
+  "parametros": {
+    "a": 0.5153676647019104,
+    "b": 0.3071101484514268
+  },
+  "usa_comodos": false,
+  "arquivo_modelo": null,
+  "faixa": {
+    "area_m2": [
+      59.23,
+      3789.63
+    ],
+    "prazo_meses": [
+      3.9425051334702257,
+      34.82546201232033
+    ],
+    "comodos": null
+  },
+  "incerteza": {
+    "sigma_log": 0.5668120769424552,
+    "nivel": 0.8
+  },
+  "metricas_cv": {
+    "mae_meses": 5.7,
+    "mape": 0.4303,
+    "rmse_meses": 8.4,
+    "r2": -0.061,
+    "sigma_log": 0.5668,
+    "validacao": "leave-one-out",
+    "n_obras": 18
+  },
+  "comparacao": [
+    {
+      "modelo": "produtividade",
+      "nome": "Produtividade mediana",
+      "formula": "prazo = área ÷ produtividade (m²/mês)",
+      "mae_meses": 12.76,
+      "mape": 1.0188,
+      "rmse_meses": 23.63,
+      "r2": -7.39,
+      "sigma_log": 0.994
+    },
+    {
+      "modelo": "potencia",
+      "nome": "Potência (log-linear)",
+      "formula": "ln(prazo) = a + b·ln(área)  →  prazo = e^a · área^b",
+      "mae_meses": 5.7,
+      "mape": 0.4303,
+      "rmse_meses": 8.4,
+      "r2": -0.061,
+      "sigma_log": 0.5668
+    },
+    {
+      "modelo": "potencia_robusta",
+      "nome": "Potência robusta (Huber)",
+      "formula": "ln(prazo) = a + b·ln(área), ajuste robusto (Huber)  →  prazo = e^a · área^b",
+      "mae_meses": 5.57,
+      "mape": 0.3938,
+      "rmse_meses": 8.46,
+      "r2": -0.075,
+      "sigma_log": 0.5628
+    },
+    {
+      "modelo": "potencia_comodos",
+      "nome": "Potência com cômodos",
+      "formula": "ln(prazo) = a + b·ln(área) + c·ln(cômodos)",
+      "fora_da_comparacao": "planilha sem cômodos em todas as obras"
+    },
+    {
+      "modelo": "random_forest",
+      "nome": "RandomForest",
+      "formula": "RandomForest (média de 300 árvores de decisão)",
+      "fora_da_comparacao": "precisa de 30+ obras"
+    }
+  ],
+  "treino": {
+    "data": "2026-11-15T19:43:25",
+    "planilha": "C:\\Users\\Admin\\Desktop\\Programação\\Faculdade\\TCC\\Agepa\\dados\\obras_reais.csv",
+    "sha256_planilha": "eca3ab5c5b846b506c3a8a71ca090831dc7e1fca010f8db3344599b96ff37eca",
+    "n_obras": 18,
+    "produtividade_mediana_por_uso": {
+      "educacao": {
+        "m2_por_mes": 46.74,
+        "obras": 14
+      },
+      "galpao": {
+        "m2_por_mes": 32.43,
+        "obras": 2
+      },
+      "saude": {
+        "m2_por_mes": 33.29,
+        "obras": 2
+      }
+    }
+  }
+}

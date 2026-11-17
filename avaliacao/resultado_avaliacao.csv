@@ -1,0 +1,23 @@
+﻿arquivo;area_real_m2;area_lida_m2;tipo_lido;metodo;confianca;fonte_texto;erro_pct;resultado;alucinacao;segundos
+plantas/fnde/TIPO1-ARQ-01-IMP-GER0_R03.pdf;1.324,27;1.324,27;construida;carimbo;alta;pdf;0,00;acerto;não;2,0
+plantas/fnde/TIPO2-ARQ-01-IMP-GER0_R03.pdf;786,07;786,07;construida;carimbo;alta;pdf;0,00;acerto;não;1,5
+plantas/fnde/TIPO1-ARQ-02-PLB-GER0_R03.pdf;1.324,27;1.045,25;util;areas_declaradas;media;pdf;-21,07;tipo diferente;não;7,9
+plantas/fnde/TIPO2-ARQ-02-PLB-GER0_R03.pdf;786,07;617,59;util;areas_declaradas;media;pdf;-21,43;tipo diferente;não;5,7
+plantas/pncp/Mozarlandia-GO_creche_tipo1__13._PLANTA_BAIXA_-_CRECHE_TIPO_1_FNDE_-_ST._DOS_LAGOS_-_MOZARLANDIA.pdf;1.324,27;1.041,38;util;areas_declaradas;media;pdf;-21,36;tipo diferente;não;8,2
+plantas/ms_ubs/MS_UBS1_PE_AQ 02.12_R01 PLANTA DE LAYOUT.pdf;—;607,00;util;areas_declaradas;media;pdf;—;sem gabarito;não;13,8
+plantas/ms_ubs/MS_UBS2_PE_AQ 02.12_R01 PLANTA DE LAYOUT.pdf;—;464,23;util;areas_declaradas;media;pdf;—;sem gabarito;não;12,0
+plantas/ms_ubs/MS_UBS3_PE_AQ 02.13_R01 PLANTA DE LAYOUT.pdf;—;669,68;util;areas_declaradas;alta;pdf;—;sem gabarito;não;27,7
+plantas/ms_ubs/MS_UBS4_PE_AQ 02.22_R00 PLANTA DE LAYOUT GERAL.pdf;—;891,01;util;areas_declaradas;media;pdf;—;sem gabarito;não;41,6
+plantas/ms_ubs/MS_UBS5_PE_AQ 04.24_R00 PLANTA DE LAYOUT GERAL.pdf;—;1.132,46;util;areas_declaradas;media;pdf;—;sem gabarito;não;54,4
+plantas/anteriores/ANEXO IV_planta baixa Cantina CAP.pdf;402,43;402,43;construida;carimbo;alta;pdf;0,00;acerto;não;0,3
+plantas/anteriores/ANEXO IV_planta baixa Cantina CAP.png;402,43;402,43;construida;carimbo;alta;ocr;0,00;acerto;não;314,9
+plantas/anteriores/PARQ_SAP_AP_01_-Planta-Baixa.pdf;954,71;954,71;util;areas_declaradas;alta;pdf;0,00;acerto;não;7,1
+plantas/anteriores/PARQ_SAP_AP_01_-Planta-Baixa.png;954,71;954,68;util;areas_declaradas;media;ocr;-0,00;acerto;não;742,7
+plantas/anteriores/10-15 PLANTA BAIXA PAV TEC ARQ24.pdf;6.962,41;6.962,41;construida;carimbo;alta;ocr;0,00;acerto;não;1.045,5
+plantas/anteriores/03 PLANTA BAIXA.pdf;4.042,32;4.042,32;construida;carimbo;alta;pdf;0,00;acerto;não;3,8
+plantas/anteriores/03 PLANTA BAIXA.png;4.042,32;4.042,32;construida;carimbo;media;ocr;0,00;acerto;não;662,8
+plantas/tcc_ufsc/Residencial_Sao_Cristovao_plantas_A5.pdf;413,41;372,75;util;areas_declaradas;media;ocr;-9,84;erro;não;281,8
+plantas/tcc_ufsc/Residencial_Sao_Cristovao_plantas_A5.pdf;—;—;;indisponivel;baixa;ocr;—;sem gabarito;não;338,5
+plantas/tcc_ufsc/Residencial_Sao_Cristovao_plantas_A5.pdf;—;—;;indisponivel;baixa;ocr;—;sem gabarito;não;442,6
+plantas/tcc_ufsc/Residencial_Sao_Cristovao_plantas_A5.pdf;—;—;;indisponivel;baixa;ocr;—;sem gabarito;não;176,9
+plantas/tcc_ufsc/Residencial_Sao_Cristovao_plantas_A5.pdf;—;—;;indisponivel;baixa;ocr;—;sem gabarito;não;287,7

@@ -1,0 +1,23 @@
+{
+ "area_m2": 8462.01,
+ "area_kind": "envoltoria",
+ "area_method": "cotas",
+ "confidence": "baixa",
+ "qtd_comodos": 44,
+ "text_source": "pdf",
+ "rooms_with_area": 0,
+ "rooms_sum_m2": null,
+ "declared_area": null,
+ "checks": [],
+ "warnings": [
+  "Área pela envoltória das cotas (191,51 m × 44,19 m, cotas em m). É um retângulo que contém a obra: em plantas com recortes o valor fica acima do real.",
+  "Área fora da faixa das obras usadas no treino (Obras públicas: 59–3.790 m²): o prazo é uma extrapolação e pode errar mais."
+ ],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 7.89,
+ "segundos_total": 8.0,
+ "modo": "original"
+}

@@ -1,0 +1,15 @@
+# Ambientes virtuais
+.venv*/
+__pycache__/
+*.pyc
+
+# Plantas de terceiros (direitos dos autores) e dados brutos grandes
+avaliacao/plantas/
+dados/simec/
+
+# Diversos
+*.log
+.claude/
+
+# CNO: nomes de pessoas físicas (proprietários) — fica só local
+dados/obras_cno.csv

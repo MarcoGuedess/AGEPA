@@ -1,0 +1,23 @@
+{
+ "area_m2": 607.0,
+ "area_kind": "util",
+ "area_method": "areas_declaradas",
+ "confidence": "media",
+ "qtd_comodos": 80,
+ "text_source": "pdf",
+ "rooms_with_area": 49,
+ "rooms_sum_m2": 607.0,
+ "declared_area": null,
+ "checks": [],
+ "warnings": [
+  "Ambientes sem área legível (não somados): Ministério Dasaúde Secretaria de Atenção Primáriaàsaúde Cnpj, Sala de Limpeza (suja), Sala de Este rilização (, Central de Gases Circulação 01, Circulação 02, Circulação 03, Circulação 04, Circulação 05, Circulação 06 Compressor, Consultório Diferen, Ginec ciado ( Consultório Indiferenciado, Consultório Odontológico, Consultório e Multi/Sala Lilás, Copa DML, Espera Farmácia - Armazenamento, Recepção, Sala de Amamentação, Sala de Curativo, Sala de Gestão Administrativa, Sala de Integração das Equipes, Sala de, Preparo e Este Prá ticas C ole tivas, Sala de, Sala de, Recepção e cinação, Sala de Va, Sala de aten Infan til/Fr, Sanit., Sanit., Sanit., Sanitá rio PCD Fem. Sanitário PCD Masc.",
+  "Esta é a área útil (soma dos ambientes). A área construída é maior, pois inclui as paredes; se o carimbo da prancha tiver a área total, use-a."
+ ],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 13.7,
+ "segundos_total": 13.8,
+ "modo": "original"
+}

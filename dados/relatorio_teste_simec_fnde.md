@@ -1,0 +1,695 @@
+# Treino do modelo de prazo — AGEPA
+
+Gerado em 2026-11-15T21:14:37 a partir de `obras_simec_fnde.csv`.
+
+## Dados
+
+- Obras usadas: **3759** (excluídas pela coluna `usar`: 16; com erro: 0)
+- Área: 785,00 a 1.324,27 m² (mediana 785,00 m²)
+- Prazo real: 3,3 a 119,6 meses (mediana 25,3)
+
+| Uso | Obras | Produtividade mediana (m²/mês) |
+|---|---:|---:|
+| educacao | 850 | 34,7 |
+| esporte | 2909 | 32,7 |
+
+## Comparação dos modelos (validação cruzada 10 partes (k-fold))
+
+Erro medido em obras que o modelo não viu no ajuste.
+
+| Modelo | Fórmula | MAE (meses) | MAPE | RMSE (meses) | R² |
+|---|---|---:|---:|---:|---:|
+| Produtividade mediana **(escolhido)** | prazo = área ÷ produtividade (m²/mês) | 14,77 | 71,5% | 20,13 | -0,058 |
+| Potência (log-linear) | ln(prazo) = a + b·ln(área)  →  prazo = e^a · área^b | 14,58 | 67,2% | 20,30 | -0,075 |
+| Potência robusta (Huber) | ln(prazo) = a + b·ln(área), ajuste robusto (Huber)  →  prazo = e^a · área^b | 14,53 | 68,7% | 20,13 | -0,057 |
+| Potência com cômodos | ln(prazo) = a + b·ln(área) + c·ln(cômodos) | — | — | — | — (planilha sem cômodos em todas as obras) |
+| RandomForest | RandomForest (média de 300 árvores de decisão) | 14,94 | 84,1% | 19,39 | 0,019 |
+
+## Modelo escolhido
+
+**Produtividade mediana**: `prazo = área ÷ 32.87 m²/mês`
+
+- Erro médio esperado: **14,77 meses** (71,5% do prazo).
+- Intervalo de 80%: de 0,41× a 2,42× o valor previsto.
+- Válido para áreas entre 785,00 e 1.324,27 m²; fora disso o sistema avisa.
+- Critério: menor MAE; com diferença de até 5%, vence o modelo mais simples.
+
+## Obras com maior erro (vale revisar os dados)
+
+| Linha | Obra | Área (m²) | Prazo real | Previsto (validação) |
+|---:|---|---:|---:|---:|
+| 1046 | PAC 2 - Construção de Quadra Escolar Coberta  001/2013 - Iracema - RR | 785,00 | 119,6 | 23,9 |
+| 2790 | PAC 2 - Construção de Quadra Escolar Coberta  001/2013 | 785,00 | 114,8 | 24,0 |
+| 2476 | PAC 2 - Construção de Quadra Escolar Coberta  003/2013 - Aragarças - GO | 785,00 | 114,3 | 24,0 |
+| 3638 | Creche Loteamento Padre Vitor | 786,07 | 112,9 | 23,9 |
+| 2876 | PAC 2 - Construção de Quadra Escolar Coberta  003/2013 - José de Freitas - PI | 785,00 | 111,2 | 24,0 |
+
+## Problemas na planilha
+
+- Linha 69 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 63 (obra repetida?).
+- Linha 70 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 69 (obra repetida?).
+- Linha 71 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 64 (obra repetida?).
+- Linha 72 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 70 (obra repetida?).
+- Linha 73 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 72 (obra repetida?).
+- Linha 74 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 71 (obra repetida?).
+- Linha 79 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 73 (obra repetida?).
+- Linha 81 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 79 (obra repetida?).
+- Linha 82 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 74 (obra repetida?).
+- Linha 84 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 77 (obra repetida?).
+- Linha 86 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 81 (obra repetida?).
+- Linha 87 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 80 (obra repetida?).
+- Linha 88 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 85 (obra repetida?).
+- Linha 89 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 86 (obra repetida?).
+- Linha 90 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 89 (obra repetida?).
+- Linha 99 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 82 (obra repetida?).
+- Linha 100 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 90 (obra repetida?).
+- Linha 101 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 87 (obra repetida?).
+- Linha 102 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 100 (obra repetida?).
+- Linha 105 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 99 (obra repetida?).
+- Linha 107 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 101 (obra repetida?).
+- Linha 108 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 88 (obra repetida?).
+- Linha 111 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 102 (obra repetida?).
+- Linha 112 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 105 (obra repetida?).
+- Linha 113 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 111 (obra repetida?).
+- Linha 121 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 113 (obra repetida?).
+- Linha 122 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 112 (obra repetida?).
+- Linha 123 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 84 (obra repetida?).
+- Linha 124 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 121 (obra repetida?).
+- Linha 125 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 122 (obra repetida?).
+- Linha 126 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 125 (obra repetida?).
+- Linha 127 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 124 (obra repetida?).
+- Linha 129 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 127 (obra repetida?).
+- Linha 130 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 108 (obra repetida?).
+- Linha 131 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 129 (obra repetida?).
+- Linha 132 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 131 (obra repetida?).
+- Linha 134 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 132 (obra repetida?).
+- Linha 135 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 134 (obra repetida?).
+- Linha 137 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 135 (obra repetida?).
+- Linha 138 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 126 (obra repetida?).
+- Linha 139 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 130 (obra repetida?).
+- Linha 140 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 83 (obra repetida?).
+- Linha 141 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 137 (obra repetida?).
+- Linha 142 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 138 (obra repetida?).
+- Linha 147 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 141 (obra repetida?).
+- Linha 148 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 147 (obra repetida?).
+- Linha 152 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 148 (obra repetida?).
+- Linha 153 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 139 (obra repetida?).
+- Linha 155 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 152 (obra repetida?).
+- Linha 156 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 142 (obra repetida?).
+- Linha 157 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 156 (obra repetida?).
+- Linha 159 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 155 (obra repetida?).
+- Linha 161 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 159 (obra repetida?).
+- Linha 162 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 161 (obra repetida?).
+- Linha 163 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 162 (obra repetida?).
+- Linha 165 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 163 (obra repetida?).
+- Linha 171 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 165 (obra repetida?).
+- Linha 173 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 171 (obra repetida?).
+- Linha 175 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 123 (obra repetida?).
+- Linha 177 (PAC 2 - Construção de Quadra Escolar Coberta  008): mesmo nome da linha 120 (obra repetida?).
+- Linha 178 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 173 (obra repetida?).
+- Linha 179 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 178 (obra repetida?).
+- Linha 180 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 107 (obra repetida?).
+- Linha 184 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 153 (obra repetida?).
+- Linha 187 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 179 (obra repetida?).
+- Linha 193 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 157 (obra repetida?).
+- Linha 197 (PAC 2 - Construção de Quadra Escolar Coberta  008): mesmo nome da linha 177 (obra repetida?).
+- Linha 203 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 140 (obra repetida?).
+- Linha 210 (PAC 2 - Construção de Quadra Escolar Coberta  032): mesmo nome da linha 94 (obra repetida?).
+- Linha 215 (PAC 2 - Construção de Quadra Escolar Coberta  019): mesmo nome da linha 170 (obra repetida?).
+- Linha 216 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 187 (obra repetida?).
+- Linha 217 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 216 (obra repetida?).
+- Linha 218 (PAC 2 - Construção de Quadra Escolar Coberta  030): mesmo nome da linha 103 (obra repetida?).
+- Linha 220 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 175 (obra repetida?).
+- Linha 227 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 180 (obra repetida?).
+- Linha 228 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 193 (obra repetida?).
+- Linha 229 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 217 (obra repetida?).
+- Linha 230 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 229 (obra repetida?).
+- Linha 231 (PAC 2 - Construção de Quadra Escolar Coberta  021): mesmo nome da linha 186 (obra repetida?).
+- Linha 232 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 230 (obra repetida?).
+- Linha 233 (PAC 2 - Construção de Quadra Escolar Coberta  022): mesmo nome da linha 174 (obra repetida?).
+- Linha 234 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 228 (obra repetida?).
+- Linha 235 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 220 (obra repetida?).
+- Linha 236 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 184 (obra repetida?).
+- Linha 237 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 203 (obra repetida?).
+- Linha 238 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 232 (obra repetida?).
+- Linha 241 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 238 (obra repetida?).
+- Linha 242 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 241 (obra repetida?).
+- Linha 243 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 242 (obra repetida?).
+- Linha 244 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 243 (obra repetida?).
+- Linha 248 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 244 (obra repetida?).
+- Linha 249 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 248 (obra repetida?).
+- Linha 250 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 249 (obra repetida?).
+- Linha 251 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 250 (obra repetida?).
+- Linha 252 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 251 (obra repetida?).
+- Linha 253 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 234 (obra repetida?).
+- Linha 255 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 252 (obra repetida?).
+- Linha 256 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 255 (obra repetida?).
+- Linha 257 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 256 (obra repetida?).
+- Linha 258 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 253 (obra repetida?).
+- Linha 259 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 257 (obra repetida?).
+- Linha 263 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 259 (obra repetida?).
+- Linha 264 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 263 (obra repetida?).
+- Linha 265 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 258 (obra repetida?).
+- Linha 266 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 264 (obra repetida?).
+- Linha 267 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 266 (obra repetida?).
+- Linha 268 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 267 (obra repetida?).
+- Linha 269 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 268 (obra repetida?).
+- Linha 270 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 269 (obra repetida?).
+- Linha 271 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 270 (obra repetida?).
+- Linha 272 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 271 (obra repetida?).
+- Linha 273 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 272 (obra repetida?).
+- Linha 274 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 273 (obra repetida?).
+- Linha 275 (PAC 2 - Construção de Quadra Escolar Coberta  025): mesmo nome da linha 195 (obra repetida?).
+- Linha 276 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 274 (obra repetida?).
+- Linha 277 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 265 (obra repetida?).
+- Linha 278 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 276 (obra repetida?).
+- Linha 282 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 278 (obra repetida?).
+- Linha 283 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 282 (obra repetida?).
+- Linha 285 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 283 (obra repetida?).
+- Linha 288 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 285 (obra repetida?).
+- Linha 290 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 288 (obra repetida?).
+- Linha 291 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 290 (obra repetida?).
+- Linha 295 (PAC 2 - Construção de Quadra Escolar Coberta  010): mesmo nome da linha 75 (obra repetida?).
+- Linha 297 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 291 (obra repetida?).
+- Linha 298 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 277 (obra repetida?).
+- Linha 300 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 297 (obra repetida?).
+- Linha 303 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 300 (obra repetida?).
+- Linha 307 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 303 (obra repetida?).
+- Linha 308 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 307 (obra repetida?).
+- Linha 309 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 298 (obra repetida?).
+- Linha 310 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 308 (obra repetida?).
+- Linha 311 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 310 (obra repetida?).
+- Linha 312 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 311 (obra repetida?).
+- Linha 313 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 312 (obra repetida?).
+- Linha 314 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 313 (obra repetida?).
+- Linha 320 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 314 (obra repetida?).
+- Linha 321 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 320 (obra repetida?).
+- Linha 322 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 321 (obra repetida?).
+- Linha 323 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 322 (obra repetida?).
+- Linha 327 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 323 (obra repetida?).
+- Linha 328 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 327 (obra repetida?).
+- Linha 329 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 328 (obra repetida?).
+- Linha 330 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 329 (obra repetida?).
+- Linha 331 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 330 (obra repetida?).
+- Linha 332 (PAC 2 - Construção de Quadra Escolar Coberta  007): mesmo nome da linha 76 (obra repetida?).
+- Linha 333 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 309 (obra repetida?).
+- Linha 334 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 331 (obra repetida?).
+- Linha 335 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 334 (obra repetida?).
+- Linha 336 (PAC 2 - Construção de Quadra Escolar Coberta  007): mesmo nome da linha 332 (obra repetida?).
+- Linha 337 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 237 (obra repetida?).
+- Linha 338 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 235 (obra repetida?).
+- Linha 339 (PAC 2 - Construção de Quadra Escolar Coberta  008): mesmo nome da linha 197 (obra repetida?).
+- Linha 340 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 335 (obra repetida?).
+- Linha 341 (PAC 2 - Construção de Quadra Escolar Coberta  007): mesmo nome da linha 336 (obra repetida?).
+- Linha 342 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 340 (obra repetida?).
+- Linha 343 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 342 (obra repetida?).
+- Linha 344 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 343 (obra repetida?).
+- Linha 346 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 344 (obra repetida?).
+- Linha 347 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 227 (obra repetida?).
+- Linha 348 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 346 (obra repetida?).
+- Linha 349 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 236 (obra repetida?).
+- Linha 356 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 348 (obra repetida?).
+- Linha 357 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 356 (obra repetida?).
+- Linha 358 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 357 (obra repetida?).
+- Linha 359 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 358 (obra repetida?).
+- Linha 360 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 359 (obra repetida?).
+- Linha 361 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 360 (obra repetida?).
+- Linha 363 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 361 (obra repetida?).
+- Linha 364 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 363 (obra repetida?).
+- Linha 365 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 364 (obra repetida?).
+- Linha 367 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 365 (obra repetida?).
+- Linha 368 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 338 (obra repetida?).
+- Linha 369 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 349 (obra repetida?).
+- Linha 370 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 367 (obra repetida?).
+- Linha 374 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 370 (obra repetida?).
+- Linha 375 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 333 (obra repetida?).
+- Linha 376 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 374 (obra repetida?).
+- Linha 377 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 376 (obra repetida?).
+- Linha 378 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 347 (obra repetida?).
+- Linha 379 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 377 (obra repetida?).
+- Linha 380 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 379 (obra repetida?).
+- Linha 381 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 375 (obra repetida?).
+- Linha 382 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 380 (obra repetida?).
+- Linha 384 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 382 (obra repetida?).
+- Linha 385 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 384 (obra repetida?).
+- Linha 386 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 385 (obra repetida?).
+- Linha 387 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 386 (obra repetida?).
+- Linha 388 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 387 (obra repetida?).
+- Linha 391 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 388 (obra repetida?).
+- Linha 392 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 391 (obra repetida?).
+- Linha 396 (PAC 2 - Construção de Quadra Escolar Coberta  006): mesmo nome da linha 368 (obra repetida?).
+- Linha 397 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 392 (obra repetida?).
+- Linha 398 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 397 (obra repetida?).
+- Linha 400 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 398 (obra repetida?).
+- Linha 402 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 400 (obra repetida?).
+- Linha 405 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 402 (obra repetida?).
+- Linha 406 (PAC 2 - Construção de Quadra Escolar Coberta  008): mesmo nome da linha 339 (obra repetida?).
+- Linha 407 (PAC 2 - Construção de Quadra Escolar Coberta  019): mesmo nome da linha 215 (obra repetida?).
+- Linha 414 (PAC 2 - Construção de Quadra Escolar Coberta  014): mesmo nome da linha 176 (obra repetida?).
+- Linha 415 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 369 (obra repetida?).
+- Linha 418 (PAC 2 - Construção de Quadra Escolar Coberta  018): mesmo nome da linha 212 (obra repetida?).
+- Linha 419 (PAC 2 - Construção de Quadra Escolar Coberta  017): mesmo nome da linha 401 (obra repetida?).
+- Linha 421 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 405 (obra repetida?).
+- Linha 426 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 425 (obra repetida?).
+- Linha 427 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 426 (obra repetida?).
+- Linha 428 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 427 (obra repetida?).
+- Linha 429 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 428 (obra repetida?).
+- Linha 430 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 429 (obra repetida?).
+- Linha 438 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 430 (obra repetida?).
+- Linha 439 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 438 (obra repetida?).
+- Linha 444 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 439 (obra repetida?).
+- Linha 445 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 444 (obra repetida?).
+- Linha 459 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 445 (obra repetida?).
+- Linha 463 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 461 (obra repetida?).
+- Linha 465 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 463 (obra repetida?).
+- Linha 466 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 465 (obra repetida?).
+- Linha 468 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 462 (obra repetida?).
+- Linha 469 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 459 (obra repetida?).
+- Linha 474 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 469 (obra repetida?).
+- Linha 476 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 474 (obra repetida?).
+- Linha 477 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 466 (obra repetida?).
+- Linha 478 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 476 (obra repetida?).
+- Linha 479 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 477 (obra repetida?).
+- Linha 481 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 478 (obra repetida?).
+- Linha 484 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 479 (obra repetida?).
+- Linha 485 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 415 (obra repetida?).
+- Linha 486 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 381 (obra repetida?).
+- Linha 487 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 421 (obra repetida?).
+- Linha 488 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 487 (obra repetida?).
+- Linha 490 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 488 (obra repetida?).
+- Linha 491 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 486 (obra repetida?).
+- Linha 492 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 490 (obra repetida?).
+- Linha 493 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 485 (obra repetida?).
+- Linha 496 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 492 (obra repetida?).
+- Linha 497 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 496 (obra repetida?).
+- Linha 498 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 497 (obra repetida?).
+- Linha 499 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 498 (obra repetida?).
+- Linha 500 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 491 (obra repetida?).
+- Linha 501 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 499 (obra repetida?).
+- Linha 502 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 501 (obra repetida?).
+- Linha 506 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 337 (obra repetida?).
+- Linha 512 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 502 (obra repetida?).
+- Linha 513 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 512 (obra repetida?).
+- Linha 514 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 493 (obra repetida?).
+- Linha 523 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 500 (obra repetida?).
+- Linha 524 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 513 (obra repetida?).
+- Linha 525 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 524 (obra repetida?).
+- Linha 526 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 525 (obra repetida?).
+- Linha 527 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 523 (obra repetida?).
+- Linha 528 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 526 (obra repetida?).
+- Linha 529 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 528 (obra repetida?).
+- Linha 530 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 514 (obra repetida?).
+- Linha 531 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 378 (obra repetida?).
+- Linha 532 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 527 (obra repetida?).
+- Linha 537 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 529 (obra repetida?).
+- Linha 538 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 532 (obra repetida?).
+- Linha 540 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 537 (obra repetida?).
+- Linha 541 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 540 (obra repetida?).
+- Linha 542 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 541 (obra repetida?).
+- Linha 543 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 538 (obra repetida?).
+- Linha 544 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 542 (obra repetida?).
+- Linha 546 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 531 (obra repetida?).
+- Linha 549 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 544 (obra repetida?).
+- Linha 551 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 549 (obra repetida?).
+- Linha 552 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 551 (obra repetida?).
+- Linha 554 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 552 (obra repetida?).
+- Linha 555 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 554 (obra repetida?).
+- Linha 557 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 555 (obra repetida?).
+- Linha 558 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 557 (obra repetida?).
+- Linha 559 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 558 (obra repetida?).
+- Linha 560 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 559 (obra repetida?).
+- Linha 562 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 546 (obra repetida?).
+- Linha 563 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 543 (obra repetida?).
+- Linha 564 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 560 (obra repetida?).
+- Linha 572 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 564 (obra repetida?).
+- Linha 573 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 572 (obra repetida?).
+- Linha 574 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 573 (obra repetida?).
+- Linha 575 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 563 (obra repetida?).
+- Linha 576 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 530 (obra repetida?).
+- Linha 577 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 574 (obra repetida?).
+- Linha 579 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 577 (obra repetida?).
+- Linha 580 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 575 (obra repetida?).
+- Linha 581 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 579 (obra repetida?).
+- Linha 582 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 581 (obra repetida?).
+- Linha 583 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 582 (obra repetida?).
+- Linha 584 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 583 (obra repetida?).
+- Linha 585 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 506 (obra repetida?).
+- Linha 588 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 584 (obra repetida?).
+- Linha 589 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 576 (obra repetida?).
+- Linha 590 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 588 (obra repetida?).
+- Linha 591 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 580 (obra repetida?).
+- Linha 595 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 591 (obra repetida?).
+- Linha 596 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 562 (obra repetida?).
+- Linha 597 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 590 (obra repetida?).
+- Linha 598 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 597 (obra repetida?).
+- Linha 599 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 598 (obra repetida?).
+- Linha 601 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 599 (obra repetida?).
+- Linha 602 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 601 (obra repetida?).
+- Linha 603 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 602 (obra repetida?).
+- Linha 604 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 595 (obra repetida?).
+- Linha 605 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 603 (obra repetida?).
+- Linha 611 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 605 (obra repetida?).
+- Linha 615 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 604 (obra repetida?).
+- Linha 616 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 589 (obra repetida?).
+- Linha 617 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 615 (obra repetida?).
+- Linha 619 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 611 (obra repetida?).
+- Linha 620 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 619 (obra repetida?).
+- Linha 621 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 620 (obra repetida?).
+- Linha 622 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 617 (obra repetida?).
+- Linha 623 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 621 (obra repetida?).
+- Linha 624 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 623 (obra repetida?).
+- Linha 625 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 624 (obra repetida?).
+- Linha 626 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 625 (obra repetida?).
+- Linha 627 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 626 (obra repetida?).
+- Linha 628 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 627 (obra repetida?).
+- Linha 629 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 622 (obra repetida?).
+- Linha 630 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 628 (obra repetida?).
+- Linha 631 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 630 (obra repetida?).
+- Linha 632 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 631 (obra repetida?).
+- Linha 633 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 629 (obra repetida?).
+- Linha 634 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 632 (obra repetida?).
+- Linha 635 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 634 (obra repetida?).
+- Linha 638 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 635 (obra repetida?).
+- Linha 639 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 638 (obra repetida?).
+- Linha 640 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 639 (obra repetida?).
+- Linha 641 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 640 (obra repetida?).
+- Linha 642 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 633 (obra repetida?).
+- Linha 647 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 585 (obra repetida?).
+- Linha 648 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 616 (obra repetida?).
+- Linha 649 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 641 (obra repetida?).
+- Linha 650 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 642 (obra repetida?).
+- Linha 651 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 649 (obra repetida?).
+- Linha 653 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 651 (obra repetida?).
+- Linha 654 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 653 (obra repetida?).
+- Linha 656 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 650 (obra repetida?).
+- Linha 657 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 654 (obra repetida?).
+- Linha 658 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 657 (obra repetida?).
+- Linha 659 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 658 (obra repetida?).
+- Linha 660 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 656 (obra repetida?).
+- Linha 662 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 659 (obra repetida?).
+- Linha 663 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 662 (obra repetida?).
+- Linha 668 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 663 (obra repetida?).
+- Linha 669 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 668 (obra repetida?).
+- Linha 670 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 669 (obra repetida?).
+- Linha 671 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 670 (obra repetida?).
+- Linha 672 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 671 (obra repetida?).
+- Linha 673 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 660 (obra repetida?).
+- Linha 674 (PAC 2 - Construção de Quadra Escolar Coberta  015): mesmo nome da linha 192 (obra repetida?).
+- Linha 675 (PAC 2 - Construção de Quadra Escolar Coberta  024): mesmo nome da linha 185 (obra repetida?).
+- Linha 677 (PAC 2 - Construção de Quadra Escolar Coberta  017): mesmo nome da linha 419 (obra repetida?).
+- Linha 678 (PAC 2 - Construção de Quadra Escolar Coberta  023): mesmo nome da linha 189 (obra repetida?).
+- Linha 679 (PAC 2 - Construção de Quadra Escolar Coberta  007): mesmo nome da linha 341 (obra repetida?).
+- Linha 685 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 672 (obra repetida?).
+- Linha 686 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 685 (obra repetida?).
+- Linha 688 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 686 (obra repetida?).
+- Linha 689 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 688 (obra repetida?).
+- Linha 691 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 689 (obra repetida?).
+- Linha 692 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 673 (obra repetida?).
+- Linha 693 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 691 (obra repetida?).
+- Linha 695 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 693 (obra repetida?).
+- Linha 696 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 695 (obra repetida?).
+- Linha 697 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 692 (obra repetida?).
+- Linha 698 (PAC 2 - Construção de Quadra Escolar Coberta  014): mesmo nome da linha 414 (obra repetida?).
+- Linha 699 (PAC 2 - Construção de Quadra Escolar Coberta  025): mesmo nome da linha 275 (obra repetida?).
+- Linha 700 (PAC 2 - Construção de Quadra Escolar Coberta  008): mesmo nome da linha 406 (obra repetida?).
+- Linha 702 (PAC 2 - Construção de Quadra Escolar Coberta  029): mesmo nome da linha 196 (obra repetida?).
+- Linha 704 (PAC 2 - Construção de Quadra Escolar Coberta  016): mesmo nome da linha 395 (obra repetida?).
+- Linha 705 (PAC 2 - Construção de Quadra Escolar Coberta  020): mesmo nome da linha 676 (obra repetida?).
+- Linha 707 (PAC 2 - Construção de Quadra Escolar Coberta  030): mesmo nome da linha 218 (obra repetida?).
+- Linha 708 (PAC 2 - Construção de Quadra Escolar Coberta  025): mesmo nome da linha 699 (obra repetida?).
+- Linha 709 (PAC 2 - Construção de Quadra Escolar Coberta  018): mesmo nome da linha 418 (obra repetida?).
+- Linha 710 (PAC 2 - Construção de Quadra Escolar Coberta  034): mesmo nome da linha 95 (obra repetida?).
+- Linha 731 (PAC 2 - Construção de Quadra Escolar Coberta  015): mesmo nome da linha 674 (obra repetida?).
+- Linha 734 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 481 (obra repetida?).
+- Linha 735 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 484 (obra repetida?).
+- Linha 736 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 734 (obra repetida?).
+- Linha 737 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 648 (obra repetida?).
+- Linha 738 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 697 (obra repetida?).
+- Linha 739 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 696 (obra repetida?).
+- Linha 740 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 739 (obra repetida?).
+- Linha 741 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 740 (obra repetida?).
+- Linha 743 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 737 (obra repetida?).
+- Linha 744 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 741 (obra repetida?).
+- Linha 745 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 744 (obra repetida?).
+- Linha 746 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 745 (obra repetida?).
+- Linha 747 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 746 (obra repetida?).
+- Linha 751 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 738 (obra repetida?).
+- Linha 753 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 747 (obra repetida?).
+- Linha 755 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 753 (obra repetida?).
+- Linha 756 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 755 (obra repetida?).
+- Linha 757 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 751 (obra repetida?).
+- Linha 759 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 757 (obra repetida?).
+- Linha 761 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 759 (obra repetida?).
+- Linha 762 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 756 (obra repetida?).
+- Linha 763 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 762 (obra repetida?).
+- Linha 765 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 763 (obra repetida?).
+- Linha 766 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 765 (obra repetida?).
+- Linha 767 (PAC 2 - Construção de Quadra Escolar Coberta  003): mesmo nome da linha 743 (obra repetida?).
+- Linha 768 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 761 (obra repetida?).
+- Linha 769 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 766 (obra repetida?).
+- Linha 771 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 768 (obra repetida?).
+- Linha 772 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 769 (obra repetida?).
+- Linha 773 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 771 (obra repetida?).
+- Linha 776 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 772 (obra repetida?).
+- Linha 777 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 776 (obra repetida?).
+- Linha 778 (PAC 2 - Construção de Quadra Escolar Coberta  017): mesmo nome da linha 677 (obra repetida?).
+- Linha 789 (PAC 2 - Construção de Quadra Escolar Coberta  014): mesmo nome da linha 698 (obra repetida?).
+- Linha 795 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 777 (obra repetida?).
+- Linha 796 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 773 (obra repetida?).
+- Linha 797 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 795 (obra repetida?).
+- Linha 798 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 797 (obra repetida?).
+- Linha 799 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 798 (obra repetida?).
+- Linha 800 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 799 (obra repetida?).
+- Linha 801 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 796 (obra repetida?).
+- Linha 803 (PAC 2 - Construção de Quadra Escolar Coberta  005): mesmo nome da linha 647 (obra repetida?).
+- Linha 804 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 801 (obra repetida?).
+- Linha 824 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  002): mesmo nome da linha 467 (obra repetida?).
+- Linha 916 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 736 (obra repetida?).
+- Linha 918 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 735 (obra repetida?).
+- Linha 961 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 881 (obra repetida?).
+- Linha 1033 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 972 (obra repetida?).
+- Linha 1049 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 961 (obra repetida?).
+- Linha 1055 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1049 (obra repetida?).
+- Linha 1116 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 804 (obra repetida?).
+- Linha 1182 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 800 (obra repetida?).
+- Linha 1204 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1055 (obra repetida?).
+- Linha 1206 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1204 (obra repetida?).
+- Linha 1208 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1206 (obra repetida?).
+- Linha 1233 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1208 (obra repetida?).
+- Linha 1239 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1233 (obra repetida?).
+- Linha 1274 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 1033 (obra repetida?).
+- Linha 1322 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 916 (obra repetida?).
+- Linha 1343 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1239 (obra repetida?).
+- Linha 1360 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1343 (obra repetida?).
+- Linha 1368 (PAC 2 - CRECHE/PRÉ-ESCOLA  004): mesmo nome da linha 915 (obra repetida?).
+- Linha 1369 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1322 (obra repetida?).
+- Linha 1370 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 918 (obra repetida?).
+- Linha 1388 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1360 (obra repetida?).
+- Linha 1415 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 468 (obra repetida?).
+- Linha 1416 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1370 (obra repetida?).
+- Linha 1417 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1369 (obra repetida?).
+- Linha 1419 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  002): mesmo nome da linha 824 (obra repetida?).
+- Linha 1420 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 455 (obra repetida?).
+- Linha 1424 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 1420 (obra repetida?).
+- Linha 1425 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1416 (obra repetida?).
+- Linha 1426 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1417 (obra repetida?).
+- Linha 1427 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1426 (obra repetida?).
+- Linha 1428 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1427 (obra repetida?).
+- Linha 1429 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1428 (obra repetida?).
+- Linha 1431 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1429 (obra repetida?).
+- Linha 1432 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 1424 (obra repetida?).
+- Linha 1434 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1431 (obra repetida?).
+- Linha 1435 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1434 (obra repetida?).
+- Linha 1436 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1435 (obra repetida?).
+- Linha 1438 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1436 (obra repetida?).
+- Linha 1440 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1425 (obra repetida?).
+- Linha 1442 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1438 (obra repetida?).
+- Linha 1443 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1442 (obra repetida?).
+- Linha 1444 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1443 (obra repetida?).
+- Linha 1448 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1444 (obra repetida?).
+- Linha 1453 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1448 (obra repetida?).
+- Linha 1454 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1453 (obra repetida?).
+- Linha 1455 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1454 (obra repetida?).
+- Linha 1457 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1455 (obra repetida?).
+- Linha 1461 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1457 (obra repetida?).
+- Linha 1462 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 1415 (obra repetida?).
+- Linha 1464 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1461 (obra repetida?).
+- Linha 1465 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1464 (obra repetida?).
+- Linha 1473 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1465 (obra repetida?).
+- Linha 1474 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1473 (obra repetida?).
+- Linha 1475 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1440 (obra repetida?).
+- Linha 1476 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1475 (obra repetida?).
+- Linha 1477 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 1432 (obra repetida?).
+- Linha 1478 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1476 (obra repetida?).
+- Linha 1480 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1474 (obra repetida?).
+- Linha 1481 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1480 (obra repetida?).
+- Linha 1483 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1481 (obra repetida?).
+- Linha 1531 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1388 (obra repetida?).
+- Linha 1552 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1483 (obra repetida?).
+- Linha 1553 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1552 (obra repetida?).
+- Linha 1554 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1553 (obra repetida?).
+- Linha 1555 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1554 (obra repetida?).
+- Linha 1558 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1555 (obra repetida?).
+- Linha 1559 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1478 (obra repetida?).
+- Linha 1564 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1558 (obra repetida?).
+- Linha 1570 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1564 (obra repetida?).
+- Linha 1581 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 1462 (obra repetida?).
+- Linha 1582 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1559 (obra repetida?).
+- Linha 1612 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 1116 (obra repetida?).
+- Linha 1629 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1531 (obra repetida?).
+- Linha 1630 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1629 (obra repetida?).
+- Linha 1661 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1582 (obra repetida?).
+- Linha 1667 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1570 (obra repetida?).
+- Linha 1675 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1661 (obra repetida?).
+- Linha 1690 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 1274 (obra repetida?).
+- Linha 1692 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1667 (obra repetida?).
+- Linha 1699 (PROINFANCIA): mesmo nome da linha 1411 (obra repetida?).
+- Linha 1700 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1692 (obra repetida?).
+- Linha 1703 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1700 (obra repetida?).
+- Linha 1704 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 1581 (obra repetida?).
+- Linha 1705 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  003): mesmo nome da linha 456 (obra repetida?).
+- Linha 1709 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1703 (obra repetida?).
+- Linha 1715 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1675 (obra repetida?).
+- Linha 1718 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1709 (obra repetida?).
+- Linha 1763 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 1612 (obra repetida?).
+- Linha 1766 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1718 (obra repetida?).
+- Linha 1769 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1630 (obra repetida?).
+- Linha 1776 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1769 (obra repetida?).
+- Linha 1802 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 1690 (obra repetida?).
+- Linha 1809 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 1182 (obra repetida?).
+- Linha 1833 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1776 (obra repetida?).
+- Linha 1849 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1833 (obra repetida?).
+- Linha 1853 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1849 (obra repetida?).
+- Linha 1873 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1853 (obra repetida?).
+- Linha 1910 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1873 (obra repetida?).
+- Linha 1920 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 1704 (obra repetida?).
+- Linha 1968 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 1477 (obra repetida?).
+- Linha 1969 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1766 (obra repetida?).
+- Linha 1970 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1715 (obra repetida?).
+- Linha 1971 (PAC 2 - CRECHE/PRÉ-ESCOLA  008): mesmo nome da linha 1673 (obra repetida?).
+- Linha 1972 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1969 (obra repetida?).
+- Linha 2017 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 1910 (obra repetida?).
+- Linha 2059 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2017 (obra repetida?).
+- Linha 2080 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2059 (obra repetida?).
+- Linha 2086 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2080 (obra repetida?).
+- Linha 2108 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 1809 (obra repetida?).
+- Linha 2129 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 1802 (obra repetida?).
+- Linha 2142 (PREFEITURA MUNICIPAL DE CACOAL): mesmo nome da linha 45 (obra repetida?).
+- Linha 2151 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2086 (obra repetida?).
+- Linha 2173 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 1972 (obra repetida?).
+- Linha 2174 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2173 (obra repetida?).
+- Linha 2175 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2174 (obra repetida?).
+- Linha 2176 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2175 (obra repetida?).
+- Linha 2197 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2151 (obra repetida?).
+- Linha 2201 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2197 (obra repetida?).
+- Linha 2220 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 1970 (obra repetida?).
+- Linha 2247 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 2220 (obra repetida?).
+- Linha 2255 (PAC 2 - CRECHE/PRÉ-ESCOLA  004): mesmo nome da linha 1368 (obra repetida?).
+- Linha 2256 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 1920 (obra repetida?).
+- Linha 2277 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2176 (obra repetida?).
+- Linha 2278 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  002): mesmo nome da linha 1419 (obra repetida?).
+- Linha 2279 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2277 (obra repetida?).
+- Linha 2288 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2201 (obra repetida?).
+- Linha 2348 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2129 (obra repetida?).
+- Linha 2379 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2288 (obra repetida?).
+- Linha 2385 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2348 (obra repetida?).
+- Linha 2391 (PAC 2 - Construção de Quadra Escolar Coberta  001): mesmo nome da linha 2108 (obra repetida?).
+- Linha 2407 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2379 (obra repetida?).
+- Linha 2490 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2407 (obra repetida?).
+- Linha 2582 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2490 (obra repetida?).
+- Linha 2595 (PAC 2 - Construção de Quadra Escolar Coberta  005/2013): mesmo nome da linha 1180 (obra repetida?).
+- Linha 2637 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2582 (obra repetida?).
+- Linha 2658 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2637 (obra repetida?).
+- Linha 2663 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2385 (obra repetida?).
+- Linha 2667 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2663 (obra repetida?).
+- Linha 2756 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2658 (obra repetida?).
+- Linha 2763 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2667 (obra repetida?).
+- Linha 2765 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2763 (obra repetida?).
+- Linha 2790 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2756 (obra repetida?).
+- Linha 2810 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2790 (obra repetida?).
+- Linha 2820 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2810 (obra repetida?).
+- Linha 2847 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2820 (obra repetida?).
+- Linha 2853 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2847 (obra repetida?).
+- Linha 2860 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2853 (obra repetida?).
+- Linha 2873 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2860 (obra repetida?).
+- Linha 2893 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2873 (obra repetida?).
+- Linha 2929 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2893 (obra repetida?).
+- Linha 2947 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2279 (obra repetida?).
+- Linha 2959 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2947 (obra repetida?).
+- Linha 2965 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2959 (obra repetida?).
+- Linha 2971 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  006): mesmo nome da linha 470 (obra repetida?).
+- Linha 2977 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2965 (obra repetida?).
+- Linha 2988 (PAC 2 - CRECHE/PRÉ-ESCOLA  003): mesmo nome da linha 2256 (obra repetida?).
+- Linha 2989 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2977 (obra repetida?).
+- Linha 2990 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 2247 (obra repetida?).
+- Linha 2991 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2989 (obra repetida?).
+- Linha 3001 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 1968 (obra repetida?).
+- Linha 3009 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 2929 (obra repetida?).
+- Linha 3010 (Creche Municipal): mesmo nome da linha 38 (obra repetida?).
+- Linha 3013 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 2991 (obra repetida?).
+- Linha 3014 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3013 (obra repetida?).
+- Linha 3015 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3014 (obra repetida?).
+- Linha 3017 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 3001 (obra repetida?).
+- Linha 3020 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  002): mesmo nome da linha 2278 (obra repetida?).
+- Linha 3023 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3015 (obra repetida?).
+- Linha 3024 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 3017 (obra repetida?).
+- Linha 3038 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 2990 (obra repetida?).
+- Linha 3041 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3023 (obra repetida?).
+- Linha 3042 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3041 (obra repetida?).
+- Linha 3054 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  001): mesmo nome da linha 3024 (obra repetida?).
+- Linha 3057 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 3038 (obra repetida?).
+- Linha 3058 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 3057 (obra repetida?).
+- Linha 3061 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3042 (obra repetida?).
+- Linha 3062 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3061 (obra repetida?).
+- Linha 3066 (PAC 2 - CRECHE/PRÉ-ESCOLA MCMV  003): mesmo nome da linha 1705 (obra repetida?).
+- Linha 3085 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3062 (obra repetida?).
+- Linha 3088 (PAC 2 - Construção de Quadra Escolar Coberta  003/2013): mesmo nome da linha 1756 (obra repetida?).
+- Linha 3090 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3009 (obra repetida?).
+- Linha 3171 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 2765 (obra repetida?).
+- Linha 3189 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3090 (obra repetida?).
+- Linha 3190 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3189 (obra repetida?).
+- Linha 3195 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 3171 (obra repetida?).
+- Linha 3198 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3085 (obra repetida?).
+- Linha 3201 (CRECHE CRIANÇA FELIZ): mesmo nome da linha 2244 (obra repetida?).
+- Linha 3205 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3198 (obra repetida?).
+- Linha 3209 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3205 (obra repetida?).
+- Linha 3221 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 1763 (obra repetida?).
+- Linha 3230 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3190 (obra repetida?).
+- Linha 3231 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3230 (obra repetida?).
+- Linha 3258 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3209 (obra repetida?).
+- Linha 3259 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 3058 (obra repetida?).
+- Linha 3266 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3258 (obra repetida?).
+- Linha 3272 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3266 (obra repetida?).
+- Linha 3276 (PROINFANCIA): mesmo nome da linha 1699 (obra repetida?).
+- Linha 3299 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3231 (obra repetida?).
+- Linha 3307 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3299 (obra repetida?).
+- Linha 3315 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3307 (obra repetida?).
+- Linha 3349 (PAC 2 - Construção de Quadra Escolar Coberta  004): mesmo nome da linha 596 (obra repetida?).
+- Linha 3404 (PAC 2 - Construção de Quadra Escolar Coberta  003/2013): mesmo nome da linha 3088 (obra repetida?).
+- Linha 3422 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3315 (obra repetida?).
+- Linha 3426 (PAC 2 - Construção de Quadra Escolar Coberta  002/2013): mesmo nome da linha 3195 (obra repetida?).
+- Linha 3436 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3422 (obra repetida?).
+- Linha 3440 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3436 (obra repetida?).
+- Linha 3443 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3272 (obra repetida?).
+- Linha 3493 (CRECHE MUNICIPAL): mesmo nome da linha 3010 (obra repetida?).
+- Linha 3494 (PAC 2 - CRECHE/PRÉ-ESCOLA  002): mesmo nome da linha 3259 (obra repetida?).
+- Linha 3516 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3443 (obra repetida?).
+- Linha 3522 (PAC 2 - ESCOLA  PROINFÂNCIA C- Metodologia Inovadoras): mesmo nome da linha 3518 (obra repetida?).
+- Linha 3535 (CRECHE): mesmo nome da linha 1587 (obra repetida?).
+- Linha 3548 (Escola de Educação Infantil): mesmo nome da linha 2074 (obra repetida?).
+- Linha 3549 (CRECHE MUNICIPAL): mesmo nome da linha 3493 (obra repetida?).
+- Linha 3550 (Bela Vista): mesmo nome da linha 1412 (obra repetida?).
+- Linha 3556 (PAC 2 - CRECHE/PRÉ-ESCOLA 096): mesmo nome da linha 1921 (obra repetida?).
+- Linha 3575 (PAC 2 - Construção de Quadra Escolar Coberta  001/2013): mesmo nome da linha 3440 (obra repetida?).
+- Linha 3585 (CRECHE MUNICIPAL): mesmo nome da linha 3549 (obra repetida?).
+- Linha 3597 (CENTRO): mesmo nome da linha 3000 (obra repetida?).
+- Linha 3614 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3516 (obra repetida?).
+- Linha 3616 (CRECHE): mesmo nome da linha 3535 (obra repetida?).
+- Linha 3639 (creche municipal): mesmo nome da linha 3585 (obra repetida?).
+- Linha 3640 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3614 (obra repetida?).
+- Linha 3651 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3640 (obra repetida?).
+- Linha 3661 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3651 (obra repetida?).
+- Linha 3662 (PAC 2 - Construção de Quadra Escolar Coberta  002): mesmo nome da linha 3221 (obra repetida?).
+- Linha 3664 (CRECHE MUNICIPAL): mesmo nome da linha 3639 (obra repetida?).
+- Linha 3679 (PAC 2 - CRECHE/PRÉ-ESCOLA  001): mesmo nome da linha 3661 (obra repetida?).
+- Linha 3691 (RUA CAPANEMA): mesmo nome da linha 1367 (obra repetida?).

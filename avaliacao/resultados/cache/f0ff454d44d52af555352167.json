@@ -1,0 +1,22 @@
+{
+ "area_m2": null,
+ "area_kind": null,
+ "area_method": "indisponivel",
+ "confidence": "baixa",
+ "qtd_comodos": 23,
+ "text_source": "pdf",
+ "rooms_with_area": 0,
+ "rooms_sum_m2": null,
+ "declared_area": null,
+ "checks": [],
+ "warnings": [
+  "Não encontramos área no carimbo, rótulos de área nos ambientes nem cotas coerentes. Informe a área manualmente para calcular prazo e custo."
+ ],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 25.47,
+ "segundos_total": 25.6,
+ "modo": "original"
+}

@@ -1,0 +1,29 @@
+{
+ "area_m2": 402.43,
+ "area_kind": "construida",
+ "area_method": "carimbo",
+ "confidence": "alta",
+ "qtd_comodos": 11,
+ "text_source": "pdf",
+ "rooms_with_area": 4,
+ "rooms_sum_m2": 330.23,
+ "declared_area": {
+  "valor_m2": 402.43,
+  "rotulo": "ÁREA A CONSTRUIR",
+  "exato": true,
+  "conferido": true
+ },
+ "checks": [
+  "A área do carimbo cabe na envoltória das cotas (20,71 m × 23,33 m).",
+  "Soma dos 4 ambientes com área: 330,23 m² (82% da área do carimbo; o restante são paredes e ambientes sem área anotada).",
+  "Cotas coerentes em 9 cadeias (unidade: cm)."
+ ],
+ "warnings": [],
+ "page": {
+  "numero": 1,
+  "total": 1
+ },
+ "processing_time_s": 0.25,
+ "segundos_total": 0.3,
+ "modo": "original"
+}
